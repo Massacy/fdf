@@ -1,10 +1,12 @@
 NAME := fdf
 NAME_LIBFT := libft/libft.a
+NAME_GNL := gnl/gnl.a
 CC := cc
-CFLAGS := -Wall -Wextra -Werror
+# CFLAGS := -Wall -Wextra -Werror 
+CFLAGS := -Wall -Wextra -Werror -fsanitize=address -g
 # CFLAGS := -Wall -Wextra -Werror -framework OpenGL -framework AppKit -fsanitize=address -g
 # CFLAGS := -Wall -Wextra -Werror -L/usr/X11R6/lib -lX11 -lXext -framework OpenGL -framework AppKit
-SRCS := fdf.c
+SRCS := fdf.c bresenham.c
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 INCLUDES := -I/usr/X11/include
 MINILIBXDIR := minilibx-linux
@@ -16,9 +18,11 @@ all: $(NAME)
 $(NAME_LIBFT):
 	make -C libft
 
+$(NAME_GNL):
+	make -C gnl
 
-$(NAME) : $(MINILIBX) $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) -L $(MINILIBXDIR) -L /usr/X11/lib -lmlx_Darwin -lXext -lX11 -framework OpenGL -framework AppKit -o $(NAME)
+$(NAME) : $(MINILIBX) $(OBJS) $(NAME_LIBFT) $(NAME_GNL)
+	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(NAME_LIBFT) $(NAME_GNL) -L $(MINILIBXDIR) -L /usr/X11/lib -lmlx_Darwin -lXext -lX11 -framework OpenGL -framework AppKit -o $(NAME)
 
 $(MINILIBX):
 	$(MAKE)	-C $(MINILIBXDIR)
@@ -29,11 +33,13 @@ $(MINILIBX):
 clean :
 	rm -f $(OBJS)
 	make -C libft clean
+	make -C gnl clean
 	make -C $(MINILIBXDIR) clean
 fclean : clean
 	rm -f $(NAME)
 	make -C libft fclean
-# TODO gnlのcleanとfcleanを追加する
-re : fclean $(NAME)
+	make -C gnl fclean
+re : fclean 
+	make $(NAME)
 
 .PHONY: clean fclean re all
