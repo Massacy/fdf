@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imasayos <imasayos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/05 12:58:27 by imasayos          #+#    #+#             */
-/*   Updated: 2023/05/03 22:46:53 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/19 04:09:38 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen_gnl(const char *s)
 {
 	size_t	cnt;
 
@@ -22,14 +22,14 @@ size_t	ft_strlen(const char *s)
 	return (cnt);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+size_t	ft_strlcpy_gnl(char *dst, const char *src, size_t size)
 {
 	size_t	i;
 	size_t	cnt;
 
 	if (src == NULL)
 		return (0);
-	cnt = ft_strlen(src);
+	cnt = ft_strlen_gnl(src);
 	if (size == 0)
 		return (cnt);
 	i = 0;
@@ -42,7 +42,7 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 	return (cnt);
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr_gnl(const char *s, int c)
 {
 	while (*s != '\0')
 	{
@@ -55,7 +55,7 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin_gnl(char *s1, char *s2)
 {
 	size_t	len_s1;
 	size_t	len_s2;
@@ -65,8 +65,8 @@ char	*ft_strjoin(char *s1, char *s2)
 
 	if (s1 == NULL)
 		return (NULL);
-	len_s1 = ft_strlen(s1);
-	len_s2 = ft_strlen(s2);
+	len_s1 = ft_strlen_gnl(s1);
+	len_s2 = ft_strlen_gnl(s2);
 	ptr = malloc(len_s1 + len_s2 + 1);
 	if (ptr == NULL)
 		return (free_buf(s1, s2));
