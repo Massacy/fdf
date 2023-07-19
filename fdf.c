@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 21:03:13 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/19 04:05:43 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/20 04:26:04 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,8 +307,8 @@ int	main(int argc, char **argv)
 	map = make_map(argv[1], vars.height, vars.width);
 
 	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, 600, 600, "Hello world!");
-	img.img = mlx_new_image(vars.mlx, 600, 600);
+	vars.win = mlx_new_window(vars.mlx, 1000, 800, "Hello world!");
+	img.img = mlx_new_image(vars.mlx, 1000, 800);
 	
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								 &img.endian);
@@ -319,14 +319,35 @@ int	main(int argc, char **argv)
 	// draw_sample(&vars, &img, map);
 	vars.map = map;
 	vars.zoom = 20;
+	vars.angle = 0.8;
+	// vars.color = create_trgb(0, 255, 0, 0);
 	draw_sample2(&vars, &img);
 	// t_pos pos;
 	// printf("1");
-	// pos = init_pos(100, 100, 200, 200);
+	// pos = init_pos(0, 0, 100, 200);
 	// bresenham(&pos, &img, &vars);
 	// printf("2");
-	// pos = init_pos(100, 100, 300, 200);
+	// pos = init_pos(0, 0, 200, 100);
 	// bresenham(&pos, &img, &vars);
+	// printf("3");
+	// pos = init_pos(0, 0, -100, 200);
+	// bresenham(&pos, &img, &vars);
+	// printf("4");
+	// pos = init_pos(0, 0, -200, 100);
+	// bresenham(&pos, &img, &vars);
+	// printf("5");
+	// pos = init_pos(0, 0, 100, -200);
+	// bresenham(&pos, &img, &vars);
+	// printf("6");
+	// pos = init_pos(0, 0, 200, -100);
+	// bresenham(&pos, &img, &vars);
+	// printf("7");
+	// pos = init_pos(0, 0, -100, -200);
+	// bresenham(&pos, &img, &vars);
+	// printf("8");
+	// pos = init_pos(0, 0, -200, -100);
+	// bresenham(&pos, &img, &vars);
+
 
 	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
 	mlx_hook(vars.win, DestroyNotify, StructureNotifyMask, close_by_red_btn, &vars);
