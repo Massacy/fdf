@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 21:03:13 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/20 04:26:04 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/21 03:25:31 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 #include <X11/Xlib.h>
 
 
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+void	my_mlx_pixel_put(t_vars *vars, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	dst = vars->addr + (y * vars->line_length + x * (vars->bits_per_pixel / 8));
 	*(unsigned int *)dst = color;
 }
 
@@ -46,23 +46,6 @@ int	close_by_esc(int keycode, t_vars *vars)
 	}
 	return (0);
 }
-
-
-// int	count_word(char const *s, char c)
-// {
-// 	int	cnt;
-// 	int	i;
-
-// 	cnt = 0;
-// 	i = 0;
-// 	while (s[i] != '\0')
-// 	{
-// 		if ((i == 0 || (i > 0 && s[i - 1] == c)) && s[i] != c)
-// 			cnt++;
-// 		i++;
-// 	}
-// 	return (cnt);
-// }
 
 void free_split(char **split)
 {
@@ -110,7 +93,6 @@ int calc_width(char *filepath)
 	if (fd == -1)
 		exit(1);
 	gnl = get_next_line(fd);
-	printf("gnl : %s\n", gnl);
 	split = ft_split(gnl, ' ');
 	width = 0;
 	while (split[width] != NULL)
@@ -173,44 +155,10 @@ int **make_map(char *filepath, int height, int width)
 	return (map);
 }
 
-// void check_gnl(char *filepath)
-// {
-// 	char *gnl;
-// 	int fd;
-
-// 	fd = open(filepath, O_RDONLY);
-// 	gnl = get_next_line(fd);
-// 	free(gnl);
-// 	close(fd);
-// }
-
 int	create_trgb(int t, int r, int g, int b)
 {
 	return (t << 24 | r << 16 | g << 8 | b);
 }
-
-
-
-void put_5pics(int x, int y, int num,t_data *img)
-{
-	int i;
-	int j;
-	int color;
-
-	color = create_trgb(0, num, 0, 0);
-	i = 0;
-	while (i < 20)
-	{
-		j = 0;
-		while (j < 20)
-		{
-			my_mlx_pixel_put(img, 20*x + i, 20*y + j, color);
-			j++;
-		}
-		i++;
-	}
-}
-
 
 t_pos init_pos(int x1, int y1, int x2, int y2)
 {
@@ -227,30 +175,7 @@ t_pos init_pos(int x1, int y1, int x2, int y2)
 	return (pos);
 }
 
-void draw_sample(t_vars *vars, t_data *image, int **map)
-{
-	int i;
-	int j;
-	int color;
-
-	i = 0;
-	while (i < vars->height)
-	{
-		j = 0;
-		while (j < vars->width)
-		{
-			if (map[i][j] == 0)
-				color = create_trgb(0, 0, 0, 255);
-			else
-				color = create_trgb(0, 255, 0, 0);
-			put_5pics(j, i, color, image);
-			j++;
-		}
-		i++;
-	}
-}
-
-void draw_sample2(t_vars *vars, t_data *data)
+void draw(t_vars *vars)
 {
 	int i;
 	int j;
@@ -262,7 +187,7 @@ void draw_sample2(t_vars *vars, t_data *data)
 		j = 0;
 		while (j < vars->width)
 		{
-			
+			// TODO 色の設定法則考える
 			if (vars->map[i][j] == 0)
 				vars->color = create_trgb(0, 255, 255, 255);
 			else
@@ -270,17 +195,56 @@ void draw_sample2(t_vars *vars, t_data *data)
 			if (i+1 < vars->height)
 			{
 				pos = init_pos(j, i, j, i+1);
-				bresenham(&pos, data, vars);
+				bresenham(&pos, vars);
 			}
 			if (j + 1 < vars->width)
 			{
 				pos = init_pos(j, i, j+1, i);
-				bresenham(&pos, data, vars);
+				bresenham(&pos, vars);
 			}
 			j++;
 		}
 		i++;
 	}
+}
+
+int catch_keycode(int keycode, t_vars *vars)
+{
+	printf("keycode : %d\n", keycode);
+	if (keycode == XK_Escape)
+	{
+		mlx_destroy_window(vars->mlx, vars->win);
+		exit(0);
+	}
+	if (keycode == XK_Up || keycode == XK_w)
+		vars->shift_y -= 10;
+	if (keycode == XK_Down || keycode == XK_s)
+		vars->shift_y += 10;
+	if (keycode == XK_Right || keycode == XK_d)
+		vars->shift_x += 10;
+	if (keycode == XK_Left || keycode == XK_a)
+		vars->shift_x -= 10;
+	if (keycode == XK_i)
+		vars->zoom += 1;
+	if (keycode == XK_o)
+		vars->zoom -= 1;
+	if (keycode == XK_j)
+	{
+		// TODO 一定以上でabortするの回避
+		vars->angle += 0.1;
+		printf("%f\n", vars->angle);
+	}
+	if (keycode == XK_k)
+	{
+		// TODO 一定以上でabortするの回避
+		vars->angle -= 0.1;
+	}
+	// TODO 
+	// mlx_clear_window(vars->mlx, vars->win);
+	// mlx_put_image_to_window(vars->mlx, vars->win, vars->img, 0, 0);
+	draw(vars);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->img, 0, 0);
+	return (0);
 }
 
 __attribute__((destructor))
@@ -291,37 +255,27 @@ static void destructor() {
 int	main(int argc, char **argv)
 {
 	t_vars	vars;
-	t_data	img;
-	int **map;
 
 	if (argc != 2)
 		exit(0);
-	(void)argc;
-	(void)argv;
-	(void)map;
-
 	vars.height = calc_height(argv[1]);
 	vars.width = calc_width(argv[1]);
-	printf("height: %d\n", vars.height);
-	printf("width: %d\n", vars.width);
-	map = make_map(argv[1], vars.height, vars.width);
-
+	vars.map = make_map(argv[1], vars.height, vars.width);
 	vars.mlx = mlx_init();
 	vars.win = mlx_new_window(vars.mlx, 1000, 800, "Hello world!");
-	img.img = mlx_new_image(vars.mlx, 1000, 800);
-	
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
-								 &img.endian);
+	vars.img = mlx_new_image(vars.mlx, 1000, 800);
+	// vars.img_null = mlx_new_image(vars.mlx, 1000, 800);
+	vars.addr = mlx_get_data_addr(vars.img, &vars.bits_per_pixel, &vars.line_length,
+								 &vars.endian);
 	// my_mlx_pixel_put(&img, 5, 5, 0x00FF0000); // red
 	// my_mlx_pixel_put(&img, 10, 10, 0x0000FF00); // green
 	// my_mlx_pixel_put(&img, 15, 15, 0x000000FF); // blue
-
-	// draw_sample(&vars, &img, map);
-	vars.map = map;
 	vars.zoom = 20;
 	vars.angle = 0.8;
+	vars.shift_x = 300;
+	vars.shift_y = 200;
 	// vars.color = create_trgb(0, 255, 0, 0);
-	draw_sample2(&vars, &img);
+
 	// t_pos pos;
 	// printf("1");
 	// pos = init_pos(0, 0, 100, 200);
@@ -348,10 +302,11 @@ int	main(int argc, char **argv)
 	// pos = init_pos(0, 0, -200, -100);
 	// bresenham(&pos, &img, &vars);
 
-
-	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
+	draw(&vars);
+	mlx_put_image_to_window(vars.mlx, vars.win, vars.img, 0, 0);
+	mlx_key_hook(vars.win, catch_keycode, &vars);
 	mlx_hook(vars.win, DestroyNotify, StructureNotifyMask, close_by_red_btn, &vars);
-	mlx_hook(vars.win, KeyPress, KeyPressMask, close_by_esc, &vars);
+	// mlx_hook(vars.win, KeyPress, KeyPressMask, close_by_esc, &vars);
 	mlx_loop(vars.mlx);
 	return (0);
 }

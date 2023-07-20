@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 01:32:49 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/20 04:15:53 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/21 02:42:05 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,12 @@ void add_z(int *x, int *y, int z, t_vars *vars)
 // 	return (((x + y) * sin(vars->angle)) - z);
 // }
 
-static void loop_case_dx_gt_dy(t_pos *pos, t_data *data, t_vars *vars)
+static void loop_case_dx_gt_dy(t_pos *pos, t_vars *vars)
 {
 	int x;
 	int y;
 	int err;
-	// printf("aaa\n");
+
 	x = pos->x1;
 	y = pos->y1;
 	err = 0;
@@ -81,15 +81,13 @@ static void loop_case_dx_gt_dy(t_pos *pos, t_data *data, t_vars *vars)
 		{
 			err = err + (2 * (pos->dy - pos->dx));
 			y = y + pos->y_step;
-			// y = (x + y) * sin(vars->angle) + pos->y_step;
 		}
-		my_mlx_pixel_put(data, x, y, vars->color);
+		my_mlx_pixel_put(vars, x, y, vars->color);
 		x = x + pos->x_step;
-		// x = (x - y) * cos(vars->angle) + pos->x_step;
 	}
 }
 
-static void loop_case_dx_lt_dy(t_pos *pos, t_data *data, t_vars *vars)
+static void loop_case_dx_lt_dy(t_pos *pos, t_vars *vars)
 {
 	int x;
 	int y;
@@ -97,8 +95,6 @@ static void loop_case_dx_lt_dy(t_pos *pos, t_data *data, t_vars *vars)
 
 	x = pos->x1;
 	y = pos->y1;
-	// printf("bbb\n");
-
 	err = 0;
 	while (condition_by_direction(y, pos->y2, pos->y_step))
 	{
@@ -108,31 +104,16 @@ static void loop_case_dx_lt_dy(t_pos *pos, t_data *data, t_vars *vars)
 		{
 			err = err + (2 * (pos->dx - pos->dy));
 			x = x + pos->x_step;
-			// x = (x - y) * cos(vars->angle) + pos->x_step;
-
 		}
-		// add_z(&x, &y, vars->map[y][x], vars);
-		my_mlx_pixel_put(data, x, y, vars->color);
-		// my_mlx_pixel_put(data, trans_x(x, y, map), trans_y(), vars->color);
-
+		my_mlx_pixel_put(vars, x, y, vars->color);
 		y = y + pos->y_step;
-		// y = (x + y) * sin(vars->angle) + pos->y_step;
-		;
 	}
 }
 
 
 
-void bresenham(t_pos *pos, t_data *data, t_vars *vars)
+void bresenham(t_pos *pos, t_vars *vars)
 {
-	// int err;
-	// int x;
-	// int y;
-
-	// (1)
-	// x = pos->x1;
-	// y = pos->y1;
-	// (2)
 	int z1;
 	int z2;
 
@@ -153,10 +134,10 @@ void bresenham(t_pos *pos, t_data *data, t_vars *vars)
 	pos->dx = pos->x2 - pos->x1;
 	pos->dy = pos->y2 - pos->y1;
 
-	pos->x1 += 200;
-	pos->y1 += 200;
-	pos->x2 += 200;
-	pos->y2 += 200;
+	pos->x1 += vars->shift_x;
+	pos->y1 += vars->shift_y;
+	pos->x2 += vars->shift_x;
+	pos->y2 += vars->shift_y;
 
 
 	if (pos->dx < 0)
@@ -171,7 +152,7 @@ void bresenham(t_pos *pos, t_data *data, t_vars *vars)
 	}
 	// draw(pos, data, vars);
 	if (pos->dx < pos->dy)
-		loop_case_dx_lt_dy(pos, data, vars);
+		loop_case_dx_lt_dy(pos, vars);
 	else
-		loop_case_dx_gt_dy(pos, data, vars);
+		loop_case_dx_gt_dy(pos, vars);
 }

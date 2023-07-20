@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 00:05:36 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/20 04:26:55 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/21 03:20:31 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,21 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-typedef struct s_data
+// #define KEY_A 97
+// #define KEY_D 100
+// #define KEY_S 115
+// #define KEY_W 119
+// #define KEY_I 105
+// #define KEY_O 111
+
+typedef struct s_vars
 {
 	void	*img;
 	char	*addr;
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
-}			t_data;
 
-typedef struct s_vars
-{
 	void	*mlx;
 	void	*win;
 	int		height;
@@ -40,6 +44,8 @@ typedef struct s_vars
 	int		color;
 	int		zoom;
 	double	angle;
+	int		shift_x;
+	int		shift_y;
 
 }			t_vars;
 
@@ -57,8 +63,8 @@ typedef struct s_pos
 	int		z2;
 }			t_pos;
 
-void		bresenham(t_pos *pos, t_data *data, t_vars *vars);
+void		bresenham(t_pos *pos, t_vars *vars);
 
-void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
+void		my_mlx_pixel_put(t_vars *vars, int x, int y, int color);
 
 #endif
