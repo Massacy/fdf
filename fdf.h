@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 00:05:36 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/21 03:20:31 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/23 21:20:40 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,44 +27,53 @@
 // #define KEY_W 119
 // #define KEY_I 105
 // #define KEY_O 111
+# define WINDOW_WIDTH 1000
+# define WINDOW_HEIGHT 800
 
 typedef struct s_vars
 {
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
+	void				*img;
+	char				*addr;
+	int					bits_per_pixel;
+	int					line_length;
+	int					endian;
 
-	void	*mlx;
-	void	*win;
-	int		height;
-	int		width;
-	int		**map;
-	int		color;
-	int		zoom;
-	double	angle;
-	int		shift_x;
-	int		shift_y;
+	void				*mlx;
+	void				*win;
+	int					height;
+	int					width;
+	int					**map;
+	int					**map_color;
+	int					color;
+	int					zoom;
+	double				angle;
+	int					shift_x;
+	int					shift_y;
 
-}			t_vars;
+}						t_vars;
 
 typedef struct s_pos
 {
-	int		x1;
-	int		y1;
-	int		x2;
-	int		y2;
-	int		dx;
-	int		dy;
-	int		x_step;
-	int		y_step;
-	int		z1;
-	int		z2;
-}			t_pos;
+	int					x1;
+	int					y1;
+	int					x2;
+	int					y2;
+	int					dx;
+	int					dy;
+	int					x_step;
+	int					y_step;
+	int					z1;
+	int					z2;
+}						t_pos;
 
-void		bresenham(t_pos *pos, t_vars *vars);
+typedef struct s_map_list
+{
+	char				*row;
+	struct s_map_list	*next;
+}						t_map_list;
 
-void		my_mlx_pixel_put(t_vars *vars, int x, int y, int color);
+void					bresenham(t_pos *pos, t_vars *vars);
+
+void					my_mlx_pixel_put(t_vars *vars, int x, int y, int color);
 
 #endif
