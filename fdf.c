@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 21:03:13 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/23 21:34:44 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/25 05:16:01 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	my_mlx_pixel_put(t_vars *vars, int x, int y, int color)
 {
 	char	*dst;
 
-	if (0 <= x && x <= WINDOW_WIDTH && 0 <= y && y <= WINDOW_HEIGHT)
+	if (0 <= x && x < WINDOW_WIDTH && 0 <= y && y < WINDOW_HEIGHT)
 	{
 		dst = vars->addr + (y * vars->line_length + x * (vars->bits_per_pixel / 8));
 	// printf("line_length : %d\n", vars->line_length);
@@ -48,7 +48,6 @@ void reset_all_puts(t_vars *vars)
 	y = 0;
 	while (y <= WINDOW_HEIGHT)
 	{
-		
 		x = 0;
 		while (x <= WINDOW_WIDTH)
 		{
@@ -189,17 +188,30 @@ int **init_map_area(int height, int width)
 	return (map);
 }
 
+int get_color(char *cell)
+{
+	char *color;
+
+	color = ft_strchr(cell, ',');
+	if (color != NULL)
+	{
+		// printf("color chr: %s\n", color+1);
+
+		return (get_int_color_from_base16(color + 1));
+	}
+	return (0x00FFFFFF);
+}
+
 void make_map(t_map_list *head_map_list, t_vars *vars)
 {
-	int **map;
 	char **split;
 	int i;
 	int j;
-
+	
 	t_map_list *tmp_list;
 	tmp_list = head_map_list;
-	map = init_map_area(vars->height, vars->width);
-
+	vars->map = init_map_area(vars->height, vars->width);
+	vars->map_color = init_map_area(vars->height, vars->width);
 	i = 0;
 	while (i < vars->height)
 	{
@@ -207,25 +219,15 @@ void make_map(t_map_list *head_map_list, t_vars *vars)
 		j = 0;
 		while (j < vars->width)
 		{
-			// printf("before atoi : row:%d split[%d]=%s\n", i,j,split[j]);
-			// color = ft_strchr(split[j], ',');
-			// if (color != NULL)
-			// {
-			// 	printf("color : %s\n", color+1);
-			// 	map_color[i][j] = ft_atoi(color+1, 16);
-			// }
-			map[i][j] = ft_atoi(split[j]);
-			// printf("after  atoi : row:%d ft_atoi(split[%d])=%d\n", i,j, ft_atoi(split[j]));
+			vars->map_color[i][j] = get_color(split[j]);
+			vars->map[i][j] = ft_atoi(split[j]);
 			j++;
 		}
-		// printf("\n");
 		free_split(split);
 		tmp_list = tmp_list->next;
 		i++;
 	}
-
-	vars->map = map;
-	// vars->map_color
+	// free_map_list(head_map_list);
 }
 
 int	create_trgb(int t, int r, int g, int b)
@@ -245,6 +247,10 @@ t_pos init_pos(int x1, int y1, int x2, int y2)
 	pos.dy = y2 - y1;
 	pos.x_step = 1;
 	pos.y_step = 1;
+	pos.x1_v = x1;
+	pos.y1_v = y1;
+	pos.x2_v = x2;
+	pos.y2_v = y2;
 	return (pos);
 }
 
@@ -284,34 +290,95 @@ int catch_keycode(int keycode, t_vars *vars)
 		mlx_destroy_window(vars->mlx, vars->win);
 		exit(0);
 	}
-	// TODO 上下範囲超えないようにする
 	if (keycode == XK_Up || keycode == XK_w)
-		vars->shift_y -= 10;
+		vars->shift_y -= 20;
 	if (keycode == XK_Down || keycode == XK_s)
-		vars->shift_y += 10;
+		vars->shift_y += 20;
 	if (keycode == XK_Right || keycode == XK_d)
-		vars->shift_x += 10;
+		vars->shift_x += 20;
 	if (keycode == XK_Left || keycode == XK_a)
-		vars->shift_x -= 10;
+		vars->shift_x -= 20;
 	if (keycode == XK_i)
-		vars->zoom += 1;
+		vars->zoom += 0.1;
 	if (keycode == XK_o)
-		vars->zoom -= 1;
+		vars->zoom -= 0.1;
 	if (keycode == XK_j)
-	{
-		// TODO 一定以上でabortするの回避
-		vars->angle += 0.1;
-		printf("%f\n", vars->angle);
-	}
+		vars->zoom_z += 1;
 	if (keycode == XK_k)
+		vars->zoom_z -= 1;
+	if (keycode == XK_n)
 	{
 		// TODO 一定以上でabortするの回避
-		vars->angle -= 0.1;
+		vars->angle = (vars->angle + 20 + 360) % 360;
+		printf("angle %d\n", vars->angle);
+	}
+	if (keycode == XK_m)
+	{
+		// TODO 一定以上でabortするの回避
+		vars->angle = (vars->angle - 20 + 360) % 360;
+		printf("%d\n", vars->angle);
+
 	}
 	reset_all_puts(vars);
 	draw(vars);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img, 0, 0);
 	return (0);
+}
+
+// void calc_center_after(int *x, int *y, t_vars *vars)
+// {
+
+// 	vars->x_center = (vars->x_center + vars->shift_x) / vars->zoom;
+// 	vars->y_center = (vars->y_center + vars->shift_y) / vars->zoom;
+// }
+// {
+// 	pos->x1_v = (pos->x1 * vars->base_zoom) * vars->zoom;
+// }
+
+void calc_center_default(t_vars *vars)
+{
+	int x_min;
+	int x_max;
+	int y_min;
+	int y_max;
+
+	// isometricで変換したときの最大最小の位置
+	x_min =  (1 / sqrt(2)) * 0 - (1 / sqrt(2)) * vars->height;
+	x_max =  (1 / sqrt(2)) * vars->width - (1 / sqrt(2)) * 0;
+	y_min = 0;
+	y_max = (1 / sqrt(6)) * vars->width + (1 / sqrt(6)) * vars->height - (2 / sqrt(6)) * vars->map[vars->height - 1][vars->width -1];
+	// printf("x_min : %d\n", x_min);
+	// printf("x_max : %d\n", x_max);
+	// printf("y_min : %d\n", y_min);
+	// printf("y_max : %d\n", y_max);
+
+	int x_d;
+	int y_d;
+	// isometricの scale, translateする前の大きさ
+	x_d = x_max - x_min;
+	y_d = y_max - y_min;
+
+	// printf("zoom_x : %d\n", WINDOW_WIDTH / x_d);
+	// printf("zoom_y : %d\n", WINDOW_HEIGHT / y_d);
+	if (WINDOW_WIDTH / x_d < WINDOW_HEIGHT / y_d)
+		vars->base_zoom = WINDOW_WIDTH / x_d;
+	else
+		vars->base_zoom = WINDOW_HEIGHT / y_d;
+	
+	vars->x_center_isometric = (x_min + x_d / 2) * vars->base_zoom;
+	vars->y_center_isometric = (y_min + y_d / 2) * vars->base_zoom;
+	// printf("x_center : %d\n", x_center);
+	// printf("y_center : %d\n", y_center);
+	vars->shift_x = WINDOW_WIDTH / 2 - vars->x_center_isometric;
+	vars->shift_y = WINDOW_HEIGHT / 2 - vars->y_center_isometric;
+	// printf("shift_x : %d\n", vars->shift_x);
+	// printf("shift_y : %d\n", vars->shift_y);
+}
+
+void calc_origin_center(t_vars *vars)
+{
+	vars->y_center = vars->height / 2;
+	vars->x_center = vars->width / 2;
 }
 
 __attribute__((destructor))
@@ -321,76 +388,46 @@ static void destructor() {
 
 int	main(int argc, char **argv)
 {
-	t_vars	vars;
+	t_vars	*vars;
 	t_map_list *head_map_list;
+
 
 	if (argc != 2)
 		exit(0);
+	vars = malloc(sizeof(t_vars));
+	if (vars == NULL)
+		exit(1);
 	head_map_list = read_file(argv[1]);
-	// t_map_list *tmp;
-	// tmp = head_map_list;
-	// while (tmp != NULL)
-	// {
-	// 	printf("%s", tmp->row);
-	// 	tmp = tmp->next;
-	// }
+	vars->height = calc_height(head_map_list);
+	vars->width = calc_width(head_map_list);
+	calc_origin_center(vars);
+	make_map(head_map_list, vars);
+	free_map_list(head_map_list);
 
-
-	vars.height = calc_height(head_map_list);
-	vars.width = calc_width(head_map_list);
-	printf("height: %d\n", vars.height);
-	printf("width: %d\n", vars.width);
-	make_map(head_map_list, &vars);
-	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "Hello world!");
-	vars.img = mlx_new_image(vars.mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
-	// vars.img_null = mlx_new_image(vars.mlx, 1000, 800);
-	vars.addr = mlx_get_data_addr(vars.img, &vars.bits_per_pixel, &vars.line_length,
-								 &vars.endian);
-	// my_mlx_pixel_put(&img, 5, 5, 0x00FF0000); // red
+	vars->mlx = mlx_init();
+	vars->win = mlx_new_window(vars->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "Hello world!");
+	vars->img = mlx_new_image(vars->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+	vars->addr = mlx_get_data_addr(vars->img, &vars->bits_per_pixel, &vars->line_length,
+								 &vars->endian);
 	// my_mlx_pixel_put(&img, 10, 10, 0x0000FF00); // green
 	// my_mlx_pixel_put(&img, 15, 15, 0x000000FF); // blue
-	my_mlx_pixel_put(&vars, 0, 0, 0x00FF0000); 
-	my_mlx_pixel_put(&vars, 5, 5, 0x00FF0000); // red
+	// my_mlx_pixel_put(&vars, 0, 0, 0x00FFFFFF); 
+	// my_mlx_pixel_put(&vars, 5, 5, 0x00FF0000); // red
 
-	vars.zoom = 20;
-	vars.angle = 0.8;
-	vars.shift_x = 300;
-	vars.shift_y = 200;
-	vars.color = create_trgb(0, 255, 255, 255);
-	// vars.color = create_trgb(0, 255, 0, 0);
+	calc_center_default(vars);
 
-	// t_pos pos;
-	// printf("1");
-	// pos = init_pos(0, 0, 100, 200);
-	// bresenham(&pos, &img, &vars);
-	// printf("2");
-	// pos = init_pos(0, 0, 200, 100);
-	// bresenham(&pos, &img, &vars);
-	// printf("3");
-	// pos = init_pos(0, 0, -100, 200);
-	// bresenham(&pos, &img, &vars);
-	// printf("4");
-	// pos = init_pos(0, 0, -200, 100);
-	// bresenham(&pos, &img, &vars);
-	// printf("5");
-	// pos = init_pos(0, 0, 100, -200);
-	// bresenham(&pos, &img, &vars);
-	// printf("6");
-	// pos = init_pos(0, 0, 200, -100);
-	// bresenham(&pos, &img, &vars);
-	// printf("7");
-	// pos = init_pos(0, 0, -100, -200);
-	// bresenham(&pos, &img, &vars);
-	// printf("8");
-	// pos = init_pos(0, 0, -200, -100);
-	// bresenham(&pos, &img, &vars);
+	vars->zoom = 1;
+	vars->zoom_z = 1;
+	vars->angle = 0;
+	// vars->shift_x = 300;
+	// vars->shift_y = 200;
+	vars->color = create_trgb(0, 255, 255, 255);
 
-	draw(&vars);
-	mlx_put_image_to_window(vars.mlx, vars.win, vars.img, 0, 0);
-	mlx_key_hook(vars.win, catch_keycode, &vars);
-	mlx_hook(vars.win, DestroyNotify, StructureNotifyMask, close_by_red_btn, &vars);
-	// mlx_hook(vars.win, KeyPress, KeyPressMask, close_by_esc, &vars);
-	mlx_loop(vars.mlx);
+	draw(vars);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->img, 0, 0);
+	mlx_key_hook(vars->win, catch_keycode, vars);
+	mlx_hook(vars->win, DestroyNotify, StructureNotifyMask, close_by_red_btn, vars);
+	// mlx_hook(vars->win, KeyPress, KeyPressMask, close_by_esc, &vars);
+	mlx_loop(vars->mlx);
 	return (0);
 }

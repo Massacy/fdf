@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 00:05:36 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/23 21:20:40 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/25 05:17:40 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 // #define KEY_O 111
 # define WINDOW_WIDTH 1000
 # define WINDOW_HEIGHT 800
+# define ISOMETRIC 1
+# define PARALLEL 2
 
 typedef struct s_vars
 {
@@ -45,10 +47,18 @@ typedef struct s_vars
 	int					**map;
 	int					**map_color;
 	int					color;
-	int					zoom;
-	double				angle;
+	double				base_zoom;
+	double				zoom;
+	double				zoom_z;
+	int					angle;
 	int					shift_x;
 	int					shift_y;
+	int					x_center;
+	int					y_center;
+	int					x_center_isometric;
+	int					y_center_isometric;
+
+	int					vue_type;
 
 }						t_vars;
 
@@ -58,12 +68,21 @@ typedef struct s_pos
 	int					y1;
 	int					x2;
 	int					y2;
+	int					x1_v;
+	int					y1_v;
+	int					x2_v;
+	int					y2_v;
+
 	int					dx;
 	int					dy;
+	int					dx_v;
+	int					dy_v;
 	int					x_step;
 	int					y_step;
 	int					z1;
 	int					z2;
+	// int					z1_v;
+	// int					z2_v;
 }						t_pos;
 
 typedef struct s_map_list
@@ -75,5 +94,11 @@ typedef struct s_map_list
 void					bresenham(t_pos *pos, t_vars *vars);
 
 void					my_mlx_pixel_put(t_vars *vars, int x, int y, int color);
+
+int						get_int_color_from_base16(char *nptr);
+
+void					isometric(int *x, int *y, int *z);
+
+void					calc_rotate(t_pos *pos, t_vars *vars);
 
 #endif
