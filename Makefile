@@ -6,7 +6,7 @@ CC := cc
 CFLAGS := -Wall -Wextra -Werror -fsanitize=address -g
 # CFLAGS := -Wall -Wextra -Werror -framework OpenGL -framework AppKit -fsanitize=address -g
 # CFLAGS := -Wall -Wextra -Werror -L/usr/X11R6/lib -lX11 -lXext -framework OpenGL -framework AppKit
-SRCS := fdf.c bresenham.c get_int_color_from_base16.c change_view.c
+SRCS := fdf.c bresenham.c get_int_color_from_base16.c change_view1.c change_view2.c make_map1.c make_map2.c mlx_utils1.c mlx_utils2.c
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 INCLUDES := -I/usr/X11/include
 MINILIBXDIR := minilibx-linux

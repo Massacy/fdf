@@ -6,13 +6,12 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 16:47:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/23 22:43:10 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/26 02:55:14 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <limits.h>
-#include <stdio.h>
 #include "fdf.h"
+#include <limits.h>
 
 static int	ft_isspace(int c)
 {
@@ -22,7 +21,7 @@ static int	ft_isspace(int c)
 		return (0);
 }
 
-static int trans_alpha_to_num(char *c)
+static int	trans_alpha_to_num(char *c)
 {
 	if ('0' <= *c && *c <= '9')
 		return (*c - '0');
@@ -34,9 +33,9 @@ static int trans_alpha_to_num(char *c)
 		exit(1);
 }
 
-int	get_int_color_from_base16(char *nptr)
+static int	get_int_color_from_base16(char *nptr)
 {
-	int num;
+	int	num;
 
 	while (ft_isspace(*nptr))
 		nptr++;
@@ -49,12 +48,23 @@ int	get_int_color_from_base16(char *nptr)
 	else
 		exit(1);
 	num = 0;
-	while (('0' <= *nptr && *nptr <= '9') || ('A' <= *nptr && *nptr <= 'F') || ('a' <= *nptr && *nptr <= 'f'))
+	while (('0' <= *nptr && *nptr <= '9') || ('A' <= *nptr && *nptr <= 'F') || \
+		('a' <= *nptr && *nptr <= 'f'))
 	{
 		num = num * 16 + trans_alpha_to_num(nptr);
 		nptr++;
 	}
 	return (num);
+}
+
+int	get_color(char *cell)
+{
+	char	*color;
+
+	color = ft_strchr(cell, ',');
+	if (color != NULL)
+		return (get_int_color_from_base16(color + 1));
+	return (WHITE);
 }
 
 // int main(void)
@@ -63,5 +73,5 @@ int	get_int_color_from_base16(char *nptr)
 // 	int num;
 // 	num = ft_atoi_base16("0x00FF0000");
 // 	printf("%d\n", num);
-// 	return 0;
+// 	return (0);
 // }
