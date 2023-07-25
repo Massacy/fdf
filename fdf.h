@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 00:05:36 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/25 05:17:40 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/25 23:21:21 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,10 @@ typedef struct s_vars
 	int					shift_y;
 	int					x_center;
 	int					y_center;
-	int					x_center_isometric;
-	int					y_center_isometric;
+	int					x_center_update;
+	int					y_center_update;
 
-	int					vue_type;
+	int					is_isometric;
 
 }						t_vars;
 
@@ -98,7 +98,7 @@ void					my_mlx_pixel_put(t_vars *vars, int x, int y, int color);
 int						get_int_color_from_base16(char *nptr);
 
 void					isometric(int *x, int *y, int *z);
-
+void					parallel(int *x, int *y, int *z);
 void					calc_rotate(t_pos *pos, t_vars *vars);
-
+void					calc_scale(t_pos *pos, t_vars *vars);
 #endif

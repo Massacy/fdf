@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 21:03:13 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/25 05:16:01 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/25 22:19:57 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,21 +319,14 @@ int catch_keycode(int keycode, t_vars *vars)
 		printf("%d\n", vars->angle);
 
 	}
+	if (keycode == XK_c)
+		vars->is_isometric *= -1;
 	reset_all_puts(vars);
 	draw(vars);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img, 0, 0);
 	return (0);
 }
 
-// void calc_center_after(int *x, int *y, t_vars *vars)
-// {
-
-// 	vars->x_center = (vars->x_center + vars->shift_x) / vars->zoom;
-// 	vars->y_center = (vars->y_center + vars->shift_y) / vars->zoom;
-// }
-// {
-// 	pos->x1_v = (pos->x1 * vars->base_zoom) * vars->zoom;
-// }
 
 void calc_center_default(t_vars *vars)
 {
@@ -347,33 +340,40 @@ void calc_center_default(t_vars *vars)
 	x_max =  (1 / sqrt(2)) * vars->width - (1 / sqrt(2)) * 0;
 	y_min = 0;
 	y_max = (1 / sqrt(6)) * vars->width + (1 / sqrt(6)) * vars->height - (2 / sqrt(6)) * vars->map[vars->height - 1][vars->width -1];
-	// printf("x_min : %d\n", x_min);
-	// printf("x_max : %d\n", x_max);
-	// printf("y_min : %d\n", y_min);
-	// printf("y_max : %d\n", y_max);
-
-	int x_d;
-	int y_d;
 	// isometricの scale, translateする前の大きさ
-	x_d = x_max - x_min;
-	y_d = y_max - y_min;
-
-	// printf("zoom_x : %d\n", WINDOW_WIDTH / x_d);
-	// printf("zoom_y : %d\n", WINDOW_HEIGHT / y_d);
-	if (WINDOW_WIDTH / x_d < WINDOW_HEIGHT / y_d)
-		vars->base_zoom = WINDOW_WIDTH / x_d;
+	if (WINDOW_WIDTH / (x_max - x_min) < WINDOW_HEIGHT / (y_max - y_min))
+		vars->base_zoom = WINDOW_WIDTH / (x_max - x_min);
 	else
-		vars->base_zoom = WINDOW_HEIGHT / y_d;
-	
-	vars->x_center_isometric = (x_min + x_d / 2) * vars->base_zoom;
-	vars->y_center_isometric = (y_min + y_d / 2) * vars->base_zoom;
-	// printf("x_center : %d\n", x_center);
-	// printf("y_center : %d\n", y_center);
-	vars->shift_x = WINDOW_WIDTH / 2 - vars->x_center_isometric;
-	vars->shift_y = WINDOW_HEIGHT / 2 - vars->y_center_isometric;
-	// printf("shift_x : %d\n", vars->shift_x);
-	// printf("shift_y : %d\n", vars->shift_y);
+		vars->base_zoom = WINDOW_HEIGHT / (y_max - y_min);
+	vars->x_center_update = (x_min + (x_max-x_min) / 2) * vars->base_zoom;
+	vars->y_center_update = (y_min + (y_max-y_min) / 2) * vars->base_zoom;
+	vars->shift_x = WINDOW_WIDTH / 2 - vars->x_center_update;
+	vars->shift_y = WINDOW_HEIGHT / 2 - vars->y_center_update;
 }
+
+// void calc_center_parallel(t_vars *vars)
+// {
+// 	int x_min;
+// 	int x_max;
+// 	int y_min;
+// 	int y_max;
+
+// 	// isometricで変換したときの最大最小の位置
+// 	x_min =  0;
+// 	x_max = ;
+// 	y_min = 0;
+// 	y_max = ;
+// 	// isometricの scale, translateする前の大きさ
+// 	if (WINDOW_WIDTH / (x_max - x_min) < WINDOW_HEIGHT / (y_max - y_min))
+// 		vars->base_zoom = WINDOW_WIDTH / (x_max - x_min);
+// 	else
+// 		vars->base_zoom = WINDOW_HEIGHT / (y_max - y_min);
+// 	vars->x_center_update = (x_min + (x_max-x_min) / 2) * vars->base_zoom;
+// 	vars->y_center_update = (y_min + (y_max-y_min) / 2) * vars->base_zoom;
+// 	vars->shift_x = WINDOW_WIDTH / 2 - vars->x_center_update;
+// 	vars->shift_y = WINDOW_HEIGHT / 2 - vars->y_center_update;
+// }
+
 
 void calc_origin_center(t_vars *vars)
 {
@@ -419,6 +419,7 @@ int	main(int argc, char **argv)
 	vars->zoom = 1;
 	vars->zoom_z = 1;
 	vars->angle = 0;
+	vars->is_isometric = 1;
 	// vars->shift_x = 300;
 	// vars->shift_y = 200;
 	vars->color = create_trgb(0, 255, 255, 255);
