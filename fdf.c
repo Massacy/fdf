@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 21:03:13 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/26 03:03:39 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/26 21:58:12 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,13 @@ void	draw(t_vars *vars)
 // 	system("leaks -q fdf");
 // }
 
+int	refresh(t_vars *vars)
+{
+	draw(vars);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->img, 0, 0);
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_vars	*vars;
@@ -82,6 +89,7 @@ int	main(int argc, char **argv)
 	mlx_key_hook(vars->win, catch_keycode, vars);
 	mlx_hook(vars->win, DestroyNotify, StructureNotifyMask, close_by_red_btn,
 		vars);
+	mlx_hook(vars->win, MapNotify, StructureNotifyMask, refresh, vars);
 	mlx_loop(vars->mlx);
 	return (0);
 }
