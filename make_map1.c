@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 02:26:57 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/26 02:34:52 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/29 01:02:47 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ static void	free_map_list(t_map_list *map_list)
 	while (map_list != NULL)
 	{
 		tmp = map_list->next;
+		free(map_list->row);
 		free(map_list);
 		map_list = tmp;
 	}
