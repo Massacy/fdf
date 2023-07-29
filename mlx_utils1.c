@@ -6,21 +6,24 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 01:41:32 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/26 02:43:46 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/29 14:59:33 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	my_mlx_pixel_put(t_vars *vars, int x, int y, int color)
+void	my_mlx_pixel_put(t_vars *vars, int x, int y, t_pos *pos)
 {
 	char	*dst;
 
 	if (0 <= x && x < WINDOW_WIDTH && 0 <= y && y < WINDOW_HEIGHT)
 	{
+		if (vars->map_z[y][x] < pos->z2)
+			return ;
+		vars->map_z[y][x] = pos->z2;
 		dst = vars->addr + (y * vars->line_length + x * (vars->bits_per_pixel
 					/ 8));
-		*(unsigned int *)dst = color;
+		*(unsigned int *)dst = vars->map_color[pos->y2][pos->x2];
 	}
 }
 
@@ -54,6 +57,15 @@ int	close_by_red_btn(t_vars *vars)
 {
 	mlx_destroy_window(vars->mlx, vars->win);
 	exit(0);
+}
+
+void	prepare_mlx_vars(t_vars *vars)
+{
+	vars->mlx = mlx_init();
+	vars->win = mlx_new_window(vars->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "FDF");
+	vars->img = mlx_new_image(vars->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+	vars->addr = mlx_get_data_addr(vars->img, &vars->bits_per_pixel,
+			&vars->line_length, &vars->endian);
 }
 
 // int	close_by_esc(int keycode, t_vars *vars)

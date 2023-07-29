@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 01:51:19 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/26 02:43:23 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/29 14:50:32 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,31 @@ int	catch_keycode(int keycode, t_vars *vars)
 	if (keycode == XK_c)
 		vars->is_isometric *= -1;
 	reset_all_puts(vars);
+	create_init_map_z(vars);
 	draw(vars);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img, 0, 0);
 	return (0);
+}
+
+void	create_init_map_z(t_vars *vars)
+{
+	int	**map_z;
+	int	i;
+	int	j;
+
+	map_z = init_map_area(WINDOW_HEIGHT, WINDOW_WIDTH);
+	i = 0;
+	while (i < WINDOW_HEIGHT)
+	{
+		j = 0;
+		while (j < WINDOW_WIDTH)
+		{
+			map_z[i][j] = INT_MAX;
+			j++;
+		}
+		i++;
+	}
+	vars->map_z = map_z;
 }
 
 void	set_default_param(t_vars *vars)
@@ -64,13 +86,5 @@ void	set_default_param(t_vars *vars)
 	vars->angle = 0;
 	vars->is_isometric = 1;
 	vars->color = create_trgb(0, 255, 255, 255);
-}
-
-void	prepare_mlx_vars(t_vars *vars)
-{
-	vars->mlx = mlx_init();
-	vars->win = mlx_new_window(vars->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "FDF");
-	vars->img = mlx_new_image(vars->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
-	vars->addr = mlx_get_data_addr(vars->img, &vars->bits_per_pixel,
-			&vars->line_length, &vars->endian);
+	create_init_map_z(vars);
 }

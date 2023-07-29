@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 01:32:49 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/26 02:56:46 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/07/29 04:22:36 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	loop_case_dx_gt_dy(t_pos *pos, t_vars *vars)
 			err = err + (2 * (pos->dy_v - pos->dx_v));
 			y = y + pos->y_step;
 		}
-		my_mlx_pixel_put(vars, x, y, vars->map_color[pos->y2][pos->x2]);
+		my_mlx_pixel_put(vars, x, y, pos);
 		x = x + pos->x_step;
 	}
 }
@@ -61,7 +61,7 @@ static void	loop_case_dx_lt_dy(t_pos *pos, t_vars *vars)
 			err = err + (2 * (pos->dx_v - pos->dy_v));
 			x = x + pos->x_step;
 		}
-		my_mlx_pixel_put(vars, x, y, vars->map_color[pos->y2][pos->x2]);
+		my_mlx_pixel_put(vars, x, y, pos);
 		y = y + pos->y_step;
 	}
 }
