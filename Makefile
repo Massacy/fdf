@@ -2,7 +2,8 @@ NAME := fdf
 NAME_LIBFT := libft/libft.a
 NAME_GNL := gnl/gnl.a
 CC := cc
-CFLAGS := -Wall -Wextra -Werror 
+CFLAGS := -Wall -Wextra -Werror
+# CFLAGS := -Wall -Wextra -Werror -O0 -g3 -fsanitize=address
 # CFLAGS := -Wall -Wextra -Werror -fsanitize=address -g
 # CFLAGS := -Wall -Wextra -Werror -framework OpenGL -framework AppKit -fsanitize=address -g
 # CFLAGS := -Wall -Wextra -Werror -L/usr/X11R6/lib -lX11 -lXext -framework OpenGL -framework AppKit

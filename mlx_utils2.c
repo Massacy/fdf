@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 01:51:19 by imasayos          #+#    #+#             */
-/*   Updated: 2023/08/03 20:45:03 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/08/03 23:38:02 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,7 @@ static void	zoom_in_out(int keycode, t_vars *vars)
 int	catch_keycode(int keycode, t_vars *vars)
 {
 	if (keycode == XK_Escape)
-	{
-		mlx_destroy_window(vars->mlx, vars->win);
-		exit(0);
-	}
+		close_by_red_btn(vars);
 	move(keycode, vars);
 	zoom_in_out(keycode, vars);
 	if (keycode == XK_n)

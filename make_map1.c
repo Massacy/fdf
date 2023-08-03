@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   make_map1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: imasayos <imasayos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 02:26:57 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/29 01:02:47 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/08/03 23:37:03 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ static t_map_list	*read_file(char *filepath)
 	if (fd == -1)
 		exit(1);
 	gnl = get_next_line(fd);
+	if (gnl == NULL)
+		exit(1);
 	head = create_map_list(gnl);
 	prev = head;
 	while (1)

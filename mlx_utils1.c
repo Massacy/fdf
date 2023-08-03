@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_utils1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: imasayos <imasayos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 01:41:32 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/29 14:59:33 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/08/03 23:40:36 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,9 @@ void	reset_all_puts(t_vars *vars)
 
 int	close_by_red_btn(t_vars *vars)
 {
+	mlx_destroy_image(var->mlx, vars->img);
 	mlx_destroy_window(vars->mlx, vars->win);
+	mlx_destroy_display(var->mlx);
 	exit(0);
 }
 
