@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   change_view2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: imasayos <imasayos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 01:53:02 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/26 02:51:27 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/08/03 20:45:32 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,22 @@ void	calc_center_default(t_vars *vars)
 	vars->y_center_update = (y_min + (y_max - y_min) / 2) * vars->base_zoom;
 	vars->shift_x = WINDOW_WIDTH / 2 - vars->x_center_update;
 	vars->shift_y = WINDOW_HEIGHT / 2 - vars->y_center_update;
+}
+
+void	refresh_map_z(t_vars *vars)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < WINDOW_HEIGHT)
+	{
+		j = 0;
+		while (j < WINDOW_WIDTH)
+		{
+			vars->map_z[i][j] = INT_MAX;
+			j++;
+		}
+		i++;
+	}
 }

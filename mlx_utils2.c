@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_utils2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: imasayos <imasayos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 01:51:19 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/29 14:50:32 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/08/03 20:45:03 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	catch_keycode(int keycode, t_vars *vars)
 	if (keycode == XK_c)
 		vars->is_isometric *= -1;
 	reset_all_puts(vars);
-	create_init_map_z(vars);
+	refresh_map_z(vars);
 	draw(vars);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img, 0, 0);
 	return (0);

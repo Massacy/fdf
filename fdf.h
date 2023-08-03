@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: imasayos <imasayos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 00:05:36 by imasayos          #+#    #+#             */
-/*   Updated: 2023/07/29 04:30:59 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/08/03 20:44:31 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void	calc_translate(t_pos *pos, t_vars *vars);
 // change_view2.c
 void	calc_origin_center(t_vars *vars);
 void	calc_center_default(t_vars *vars);
+void	refresh_map_z(t_vars *vars);
 
 // fdf.c
 void	draw(t_vars *vars);
