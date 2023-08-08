@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 01:41:32 by imasayos          #+#    #+#             */
-/*   Updated: 2023/08/03 23:40:36 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/08/08 20:54:21 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ void	reset_all_puts(t_vars *vars)
 
 int	close_by_red_btn(t_vars *vars)
 {
-	mlx_destroy_image(var->mlx, vars->img);
+	mlx_destroy_image(vars->mlx, vars->img);
 	mlx_destroy_window(vars->mlx, vars->win);
-	mlx_destroy_display(var->mlx);
+	mlx_destroy_display(vars->mlx);
 	exit(0);
 }
 
@@ -68,6 +68,9 @@ void	prepare_mlx_vars(t_vars *vars)
 	vars->img = mlx_new_image(vars->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
 	vars->addr = mlx_get_data_addr(vars->img, &vars->bits_per_pixel,
 			&vars->line_length, &vars->endian);
+	if (vars->mlx == NULL || vars->win == NULL || vars->img == NULL
+		|| vars->addr == NULL)
+		exit(1);
 }
 
 // int	close_by_esc(int keycode, t_vars *vars)
